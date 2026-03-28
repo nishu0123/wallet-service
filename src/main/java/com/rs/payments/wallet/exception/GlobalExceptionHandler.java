@@ -8,43 +8,36 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * Handles 409 Conflict: Triggered when a database unique constraint is violated.
-     * Requirement: "Duplicate username or email returns 409 Conflict."
-     */
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, Object>> handleConflict(DataIntegrityViolationException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.CONFLICT.value());
-        body.put("error", "Conflict");
-        body.put("message", "User with this username or email already exists");
-
-        return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    public ResponseEntity<ErrorResponse> handleConflict(DataIntegrityViolationException ex) {
+        // We use the Record to build a structured response
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),            // 409
+                HttpStatus.CONFLICT.getReasonPhrase(),  // "Conflict"
+                "User already exists with this username or email"
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
-    /**
-     * Handles 400 Bad Request: Triggered when @Valid fails on the RequestBody.
-     * Requirement: "Invalid fields return 400 Bad Request."
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+        // We collect all validation errors into a single string
+        String details = ex.getBindingResult().getFieldErrors().stream()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .collect(Collectors.joining(", "));
 
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),         // 400
+                HttpStatus.BAD_REQUEST.getReasonPhrase(), // "Bad Request"
+                details
         );
-        body.put("errors", errors);
-
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }
