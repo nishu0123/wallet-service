@@ -39,10 +39,10 @@ configure<PmdExtension> {
 group = "com.rs.payments"
 version = "0.0.1-SNAPSHOT"
 description = "wallet-service"
-
+//using 21 vrersion , as it is installed already in my machine
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
