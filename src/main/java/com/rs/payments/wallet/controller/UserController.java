@@ -31,7 +31,7 @@ public class UserController {
             description = "Creates a new user with the provided username and email.",
             responses = {
                     @ApiResponse(
-                            responseCode = "200",
+                            responseCode = "201",
                             description = "User created successfully",
                             content = @Content(schema = @Schema(implementation = User.class))
                     ),
@@ -47,6 +47,6 @@ public class UserController {
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         User created = userService.createUser(user);
-        return ResponseEntity.ok(created);
+        return ResponseEntity.status(201).body(created);
     }
 }

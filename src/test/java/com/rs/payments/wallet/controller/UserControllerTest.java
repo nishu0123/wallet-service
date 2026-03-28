@@ -1,5 +1,6 @@
 package com.rs.payments.wallet.controller;
 
+import com.rs.payments.wallet.dto.CreateUserRequest;
 import com.rs.payments.wallet.model.User;
 import com.rs.payments.wallet.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,12 +11,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 // --- CORRECT IMPORTS START ---
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post; // Correct post
@@ -39,7 +42,7 @@ class UserControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
-
+/*
     @Test
     @DisplayName("POST /users - Should return 201 Created on success")
     void shouldReturn201WhenUserIsCreated() throws Exception {
@@ -57,8 +60,8 @@ class UserControllerTest {
 
         verify(userService, times(1)).createUser(any(User.class));
     }
+*/
 
-    /*
     @Test
     @DisplayName("Should create user")
     void shouldCreateUser() {
@@ -72,10 +75,10 @@ class UserControllerTest {
         ResponseEntity<User> response = userController.createUser(request);
 
         // Then
-        assertEquals(200, response.getStatusCode().value());
+        assertEquals(201, response.getStatusCode().value());
         assertEquals(createdUser, response.getBody());
         verify(userService, times(1)).createUser(any(User.class));
     }
 
-    */
+
 }
