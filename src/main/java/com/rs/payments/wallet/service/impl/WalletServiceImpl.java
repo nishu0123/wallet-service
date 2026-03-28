@@ -53,6 +53,7 @@ public class WalletServiceImpl implements WalletService {
 
         // 2. Requirement: User already has wallet returns 400
         // Check the existing user object before creating a new one
+
         if (user.getWallet() != null) {
             throw new BadRequestException("User already has a wallet");
         }

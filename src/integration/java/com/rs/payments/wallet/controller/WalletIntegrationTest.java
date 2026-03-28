@@ -28,6 +28,8 @@ class WalletIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private WalletRepository walletRepository;
 
+
+
     @Test
     void shouldCreateWalletForExistingUser() {
         User user = new User();
@@ -41,7 +43,7 @@ class WalletIntegrationTest extends BaseIntegrationTest {
         String url = "http://localhost:" + port + "/wallets";
         ResponseEntity<Wallet> response = restTemplate.postForEntity(url, request, Wallet.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getId()).isNotNull();
         assertThat(response.getBody().getUser().getId()).isEqualTo(user.getId());
