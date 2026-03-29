@@ -47,28 +47,28 @@ public class WalletServiceImpl implements WalletService {
     @Override
     @Transactional
     public Wallet createWalletForUser(UUID userId) {
-        // 1. Requirement: User not found returns 404
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + userId));
 
-        // 2. Requirement: User already has wallet returns 400
-        // Check the existing user object before creating a new one
+        validateWalletCreation(user);
 
+        Wallet wallet = buildInitialWallet(user);
+        user.setWallet(wallet);
+
+        return userRepository.save(user).getWallet();
+    }
+
+    private void validateWalletCreation(User user) {
         if (user.getWallet() != null) {
             throw new BadRequestException("User already has a wallet");
         }
+    }
 
-        // 3. Requirement: balance = 0
+    private Wallet buildInitialWallet(User user) {
         Wallet wallet = new Wallet();
         wallet.setBalance(BigDecimal.ZERO);
-
-        // Establishing the Bi-directional link
         wallet.setUser(user);
-        user.setWallet(wallet);
-
-        // 4. Save and Return
-        user = userRepository.save(user); // Cascade saves wallet
-        return user.getWallet();
+        return wallet;
     }
 
 

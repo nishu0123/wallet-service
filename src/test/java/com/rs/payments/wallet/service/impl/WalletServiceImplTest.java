@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -50,7 +51,10 @@ class WalletServiceImplTest {
 
         // Then
         assertNotNull(result);
-        assertEquals(BigDecimal.ZERO, result.getBalance());
+        // DON'T USE THIS (Fails if 0.0 != 0.00)
+//        assertEquals(BigDecimal.ZERO, result.getBalance());
+        // USE THIS (Passes regardless of scale)
+        assertThat(result.getBalance()).isEqualByComparingTo(BigDecimal.ZERO);
 //        assertEquals(walletService.createWalletForUser(userId).getBalance(), BigDecimal.ZERO); //do not call twice
 
         
