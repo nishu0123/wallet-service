@@ -38,6 +38,7 @@ class WalletServiceImplTest {
         UUID userId = UUID.randomUUID();
         User user = new User();
         user.setId(userId);
+        user.setWallet(null); // <--- THIS MUST BE NULL
         
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         // The service saves the user, which cascades to wallet. 
@@ -50,11 +51,12 @@ class WalletServiceImplTest {
         // Then
         assertNotNull(result);
         assertEquals(BigDecimal.ZERO, result.getBalance());
-        assertEquals(walletService.createWalletForUser(userId).getBalance(), BigDecimal.ZERO);
+//        assertEquals(walletService.createWalletForUser(userId).getBalance(), BigDecimal.ZERO); //do not call twice
+
         
         // Verify interactions
-        verify(userRepository, times(2)).findById(userId); // Called twice due to second assert
-        verify(userRepository, times(2)).save(user);
+        verify(userRepository, times(1)).findById(userId); // Called once as second assert has been removed
+        verify(userRepository, times(1)).save(user);
     }
 
     @Test

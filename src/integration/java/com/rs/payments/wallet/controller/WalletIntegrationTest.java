@@ -35,6 +35,7 @@ class WalletIntegrationTest extends BaseIntegrationTest {
         User user = new User();
         user.setUsername("walletuser");
         user.setEmail("wallet@example.com");
+//        user.setWallet(null);// Explicitly null to pass the , if user have wallet or not
         user = userRepository.save(user);
 
         CreateWalletRequest request = new CreateWalletRequest();

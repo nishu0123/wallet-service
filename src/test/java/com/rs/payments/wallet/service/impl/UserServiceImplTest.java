@@ -3,6 +3,7 @@ package com.rs.payments.wallet.service.impl;
 import java.util.UUID;
 import com.rs.payments.wallet.model.User;
 import com.rs.payments.wallet.repository.UserRepository;
+import com.rs.payments.wallet.service.WalletService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,11 @@ class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userService;
+
+
+    @Mock
+    private WalletService walletService; // Add this!
+
 
     @Test
     @DisplayName("Should create user successfully")
