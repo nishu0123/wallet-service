@@ -71,5 +71,12 @@ public class WalletServiceImpl implements WalletService {
         return wallet;
     }
 
+    @Override
+    @Transactional
+    public Wallet deposit(UUID walletId, BigDecimal amount) {
+        // We will write the real logic here in the Green Phase
+        return null;
+    }
+
 
 }
